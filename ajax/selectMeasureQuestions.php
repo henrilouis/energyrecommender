@@ -4,7 +4,7 @@
 
 	$database = new medoo();
 
-	$data = $database->select("userMeasureQuestions","*");
+	$data = $database->select("measureQuestions","*");
 
 	echo json_encode($data);
 

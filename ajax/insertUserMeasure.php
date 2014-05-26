@@ -8,7 +8,7 @@
 
 			"userId" 				=> $_POST['userId'],
 			"measureId"				=> $_POST['measureId'],
-			"currentAbility" 		=> $_POST['currentAbility']
+			"currentAbility" 		=> $_POST['currentAbility'],
 			"abilityChange"			=> $_POST['abilityChange']
 
 	));
