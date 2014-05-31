@@ -4,6 +4,46 @@
 		"selected_items":
 		[
 			[
+				"last",
+				"lastChange"
+			],
+			[
+				"recommena",
+				"recommendationNumber"
+			],
+			[
+				"leefti",
+				"leeftijdContainer"
+			],
+			[
+				"ges",
+				"geslachtInput2"
+			],
+			[
+				"geslacth",
+				"geslachtInput"
+			],
+			[
+				"leef",
+				"leeftijdInput"
+			],
+			[
+				"leeft",
+				"leeftijdLabel"
+			],
+			[
+				"no",
+				"notifyObservers"
+			],
+			[
+				"hele",
+				"helemaalEens"
+			],
+			[
+				"helemaal",
+				"helemaalOneens"
+			],
+			[
 				"getMe",
 				"getMeasureQuestions"
 			],
@@ -160,18 +200,53 @@
 	"buffers":
 	[
 		{
+			"contents": "var RashRecommenderModel = function( options ){\n\n	/***********************************************************\n							 Options\n	***********************************************************/\n\n	// These options should be set from outside the model with\n	// the random conditions assigned\n\n	var defaults = {\n\n		range                   		: 100,\n		measureRange					: 10,				// Range for each sample measure\n		stepConstant					: 0.375,\n		maxSteps						: 16,\n		maxStepRepeat					: 3,				// Maximum times going back and forth\n		recommendationAllignment		: \"center\", 		// can either be center, below, above or random\n		recommendationNumber			: 7,\n\n	};\n\n	var options = $.extend(defaults,options);\n	var o = options;\n\n	/***********************************************************\n						Variable Declarations\n	***********************************************************/\n	var measures, setQuestions, measureQuestions, currentUserId,\n		facebookId, email, currentMeasure, prevAbility,  \n		chosenMeasureId, stepSize, prevStep, change, lastChange,\n		measureHistory = [], recommendation = [],\n		stepRepeat = 0, currentStep = 0, stepCounter = 0,\n		ability = o.range/2,\n		interested = false,\n		currentStage = \"informedConsent\";\n\n	// Get all the required data from the database\n\n	// Fill the array with all the measures in the database\n	$.get( \"ajax/selectMeasures.php\", function( data ){\n		measures = $.parseJSON( data );\n	});\n\n	// Fill the array with all the questions about the set in the database\n	$.get( \"ajax/selectSetQuestions.php\", function( data ){\n		setQuestions = $.parseJSON( data );\n		notifyObservers( \"setQuestionsReady\" );\n	});\n\n	// Fill the array with all the questions per measure in the database\n	$.get( \"ajax/selectMeasureQuestions.php\", function( data ){\n		measureQuestions = $.parseJSON( data );\n	});\n	\n\n	/***********************************************************\n						Helper Functions\n	***********************************************************/\n\n	shuffle = function( array ){\n		var currentIndex = array.length, \n		temporaryValue, randomIndex;\n\n	  	// While there remain elements to shuffle...\n	  	while ( 0 !== currentIndex ) {\n		    // Pick a remaining element...\n		    randomIndex = Math.floor( Math.random() * currentIndex );\n		    currentIndex -= 1;\n\n		    // And swap it with the current element.\n		    temporaryValue = array[currentIndex];\n		    array[currentIndex] = array[randomIndex];\n		    array[randomIndex] = temporaryValue;\n	  	}\n\n	  	return array;\n	}\n\n	getClosest = function( array,value ){\n		var closest = null;\n		$.each( array, function(){\n			if ( closest == null ){ \n				closest = this;\n			}\n			else if( Math.abs( this.difficulty - value ) < Math.abs( closest.difficulty - value ) ){\n				closest = this;\n			}\n		})\n		return closest;\n	}\n\n	/***********************************************************\n						Private Functions\n	***********************************************************/\n\n	// Create the user, add it to the database, and assign the\n	// experimental condition.\n	createUser = function( fbid, mail, gender ){\n\n		$.post( \"ajax/insertUser.php\", \n			{\n				facebookId: fbid,\n				email: mail,\n				gender: gender,\n				condition: o.recommendationAllignment\n			}).done( function( data ) {\n			currentUserId = data;\n			email = mail;\n			facebookId = fbid;\n		});\n\n		notifyObservers('userCreated');\n	}\n\n	// After the user has filled out everything, update the\n	// user data.\n	updateUser = function(){\n\n		var intBool = interested ? 1 : 0;\n		$.post( \"ajax/updateUser.php\", \n			{ \n				id: currentUserId,\n				ability: ability,\n				chosenId: chosenMeasureId,\n				email: email, \n				interested: intBool, \n			}\n		);\n	}\n\n	// To add a facebook friend to a user. Accepts the facebook friend object\n	insertFacebookFriend = function( friend ){\n		$.post( \"ajax/insertFriend.php\", \n			{ \n				facebookId: facebookId,\n				friendId: friend.id,\n				friendName: friend.name,\n				//score: score,\n			}\n		);\n	}\n\n	// Get a measure to present to the user, check if it's in range and if it hasnt\n	// been shown before. This one needs to be upgraded to use closest instead of\n	// the range.\n	newMeasure = function(){\n		if( stepCounter < o.maxSteps && change > 1 ){\n\n			var tempMeasures = [];\n			var selectedMeasures = [];\n\n			for( i=0; i<measures.length; i++ ){\n				if( $.inArray(measures[i], measureHistory ) == -1){\n					tempMeasures.push(measures[i]);\n				}\n			}\n\n			// Taking only the 5 closest measures, this number might have to be lower\n			// when the ability is further away from the center, because there are\n			// less measures there. When we implement the first four questions the \n			// whole iteration should be gone! <------------------------\n			// This seems to work pretty well though\n			for ( i=0; i<5; i++ ){\n				var closest = getClosest( tempMeasures, ability );\n				selectedMeasures.push( closest );\n				// Remove the recommendation from the temp list\n				tempMeasures = $.grep( tempMeasures, function( value ) {\n					return value != closest;\n				});\n			}\n\n			// Select a measure at random\n			var randomSelection = Math.floor( Math.random() * selectedMeasures.length );\n			currentMeasure = selectedMeasures[randomSelection];\n			measureHistory.push( selectedMeasures[randomSelection] );\n			stepCounter++;\n			notifyObservers( 'measureReady' );\n			\n		}\n		else{\n			// Create the recommendation when the conditions are met\n			createRecommendation();\n		}\n	}\n\n	// Used when the user votes, can take either \"yes\", \"no\" or \"nvt\" as parameters.\n	setUserMeasure = function( value ){\n		if( value == \"nvt\" ){\n			change = 0;\n			lastChange = 0;\n		}\n		else{\n			// Check if this is the first step\n			if( prevStep == null ){\n				change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );\n			}\n			// Check if last time the user went in the oppsite direction\n			// and if the step hasn't been repeated too often\n			else if( prevStep != value ){\n				stepRepeat ++;\n				if( stepRepeat >= o.maxStepRepeat ){\n					stepRepeat = 0;\n					currentStep ++;\n					change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );\n				}\n				else{\n					change = lastChange;\n				}\n			}\n			else{\n				stepRepeat = 0;\n				currentStep ++;\n				change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );\n			}\n\n			// Save the last direction and change\n			prevStep = value;\n			lastChange = change;\n\n			// Set to minus or plus and apply change\n			change = ( value == \"yes\" ? change : -change );\n			ability += change;\n			\n		}\n\n		console.log(ability);\n\n		$.post( \"ajax/insertUserMeasure.php\", \n			{ \n				userId: currentUserId,\n				measureId: currentMeasure.id,\n				currentAbility: ability,\n				abilityChange: change\n			}).done(function(){\n\n			// When measure is saved get the next one\n			newMeasure();\n		});\n	}\n\n	// Create the recommendation from the ability depending\n	// on the condition.\n	createRecommendation = function(){\n		var recomArray = [];\n		for( i=0; i<measures.length; i++ ){\n			if( $.inArray( measures[i],measureHistory ) == -1 ){\n				if( o.recommendationAllignment == \"center\" || o.recommendationAllignment == \"random\" ){\n						recomArray.push( measures[i] );\n				}\n				else if ( o.recommendationAllignment == \"below\" ){\n					if( measures[i].difficulty <= ability ){\n						recomArray.push( measures[i] );\n					}\n				}\n				else if ( o.recommendationAllignment == \"above\" ){\n					if( measures[i].difficulty >= ability ){\n						recomArray.push( measures[i] );\n					}\n				}\n			}\n		}\n		\n		if( o.recommendationAllignment == \"center\" || o.recommendationAllignment == \"below\" || o.recommendationAllignment == \"above\" ){\n			\n			// Check if there are enough available recommendations and use them\n			// This might not be the case but i'm not sure what to do with this yet.\n			if( recomArray.length >= o.recommendationNumber ){\n				for( i=0; i<o.recommendationNumber; i++ ){\n\n					var closest = getClosest( recomArray, ability );\n					recommendation.push( closest );\n					// Remove the recommendation from the temp list\n					recomArray = $.grep( recomArray, function( value ) {\n						return value != closest;\n					});\n\n				}\n			}\n			else{\n				for( i=0; i<recomArray.length; i++ ){\n\n					var closest = getClosest( recomArray, ability );\n					recommendation.push( closest );\n					// Remove the recommendation from the temp list\n					recomArray = $.grep( recomArray, function( value ) {\n						return value != closest;\n					});\n					\n				}\n			}\n\n			\n			// Still randomize the recommendations, this shuffles the array\n			shuffle(recommendation);\n		}\n		else{\n			shuffle(recomArray);\n			for( i=0; i<o.recommendationNumber; i++ ){\n					recommendation.push( recomArray[i] );\n			}\n		}\n		\n\n		// Write the recommendations to the database\n		for( i=0; i<recommendation.length; i++ ){\n			$.post( \"ajax/insertRecommendation.php\", \n			{ \n				userId: currentUserId,\n				measureId: recommendation[i].id,\n				position: i+1\n			});\n		}\n\n		notifyObservers( \"recommendationReady\" );\n	}\n\n	// Register an answer to a question about a specific measure\n	setUserMeasureQuestion = function( measureId, questionId, answer ){\n		$.post( \"ajax/insertUserMeasureQuestion.php\", \n			{ \n				userId: currentUserId,\n				measureId: measureId,\n				questionId: questionId,\n				answer: answer\n			});\n	}\n\n	setMeasureQuestionsDone = function(){\n		notifyObservers( \"measureQuestionsDone\" );\n	}\n\n	setSetQuestionsDone = function(){\n		notifyObservers( \"setQuestionsDone\" );\n	}\n\n	// Register an answer to a question about the entire set\n	setUserSetQuestion = function ( questionId, answer ){\n		$.post( \"ajax/insertUserSetQuestion.php\", \n			{ \n				userId: currentUserId,\n				questionId: questionId,\n				answer: answer\n			});\n	}\n\n	getMeasure = function(){\n		return currentMeasure;\n	}\n\n	getRecommendation = function(){\n		return recommendation;\n	}\n\n	getSetQuestions = function(){\n		return setQuestions;\n	}\n\n	getMeasureQuestions = function(){\n		return measureQuestions;\n	}\n\n	// Set the users email\n	setEmail = function( value ){\n		email = value;\n	}\n\n	// Set if the user is interested in more studies\n	setInterested = function( value ){\n		interested = value;\n	}\n\n	// The measure chosen by the user\n	setChosen = function( value ){\n		chosenMeasureId = value;\n		notifyObservers( \"measureChosen\" );\n	}\n\n	/***********************************************************\n						Public Functions\n	***********************************************************/\n\n	this.createUser 					= createUser;\n	this.updateUser 					= updateUser;\n	this.insertFacebookFriend			= insertFacebookFriend;\n	this.newMeasure 					= newMeasure;\n	this.createRecommendation 			= createRecommendation;\n\n	this.getMeasure						= getMeasure;\n	this.getRecommendation				= getRecommendation;\n	this.getSetQuestions				= getSetQuestions;\n	this.getMeasureQuestions			= getMeasureQuestions;\n\n	this.setUserMeasure 				= setUserMeasure;\n	this.setChosen						= setChosen;\n	this.setUserMeasureQuestion 		= setUserMeasureQuestion;\n	this.setMeasureQuestionsDone		= setMeasureQuestionsDone;\n	this.setUserSetQuestion 			= setUserSetQuestion;\n	this.setSetQuestionsDone			= setSetQuestionsDone;\n	this.setEmail						= setEmail;\n	this.setInterested					= setInterested;\n\n	/***********************************************************\n						Observable Pattern\n	***********************************************************/\n\n	var listeners = [];\n\n	notifyObservers = function( args ){\n		for ( var i = 0; i < listeners.length; i++ ){\n	        listeners[i].update(args);\n	    }\n	};\n\n	this.addObserver = function( listener ){\n		listeners.push( listener );\n	};\n\n}",
 			"file": "js/rashRecommenderModel.js",
+			"file_size": 12090,
+			"file_write_time": 130458259445943188,
 			"settings":
 			{
-				"buffer_size": 10595,
+				"buffer_size": 11627,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "ajax/selectMeasureQuestions.php",
+			"file": "ajax/insertFriend.php",
 			"settings":
 			{
-				"buffer_size": 143,
+				"buffer_size": 373,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "ajax/insertUser.php",
+			"settings":
+			{
+				"buffer_size": 341,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/main.js",
+			"settings":
+			{
+				"buffer_size": 2246,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "js/view/demographicsView.js",
+			"settings":
+			{
+				"buffer_size": 2313,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/view/informedConsentView.js",
+			"settings":
+			{
+				"buffer_size": 2616,
 				"line_ending": "Windows"
 			}
 		},
@@ -179,48 +254,24 @@
 			"file": "index.php",
 			"settings":
 			{
-				"buffer_size": 2830,
+				"buffer_size": 3387,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "js/main.js",
+			"file": "js/vendor/facebook.js",
 			"settings":
 			{
-				"buffer_size": 1134,
+				"buffer_size": 3481,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "css/main.css",
+			"settings":
+			{
+				"buffer_size": 1019,
 				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "js/view/measureAbilityView.js",
-			"settings":
-			{
-				"buffer_size": 1922,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/view/recommendationView.js",
-			"settings":
-			{
-				"buffer_size": 1963,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/view/measureQuestionsView.js",
-			"settings":
-			{
-				"buffer_size": 2459,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/controller/measureQuestionsController.js",
-			"settings":
-			{
-				"buffer_size": 60,
-				"line_ending": "Windows"
 			}
 		}
 	],
@@ -288,24 +339,28 @@
 	},
 	"file_history":
 	[
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/setQuestionsController.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/setQuestionsView.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureAbilityController.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureQuestionsController.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/recommendationController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/echoDatabase.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/measureAbilityView.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/measureQuestionsView.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/css/main.css",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/setQuestionsView.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/informedConsentController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUser.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/recommendationView.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/demographicsController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureQuestionsController.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/informedConsentView.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/setQuestionsController.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/updateUser.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectMeasureQuestions.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureAbilityController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/recommendationController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/css/main.css",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertRecommendation.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserMeasure.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUser.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/main.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserSetQuestion.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectSetQuestions.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserMeasureQuestion.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectMeasureQuestions.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectMeasures.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/medoo.min.php",
 		"/C/Users/Henri/Dropbox/Tue/HTI/Research Project/Oude Experiment/algorithm.php",
@@ -366,9 +421,10 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 90.0,
 		"where_history":
 		[
+			""
 		]
 	},
 	"find_state":
@@ -376,6 +432,33 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"stepDirection",
+			"startingStepSize",
+			"stepDirection",
+			"prev",
+			"getClosest",
+			"console.log",
+			"facebookId",
+			"currentUserId",
+			"userId",
+			"createuser",
+			"facebook",
+			"console.log",
+			"FB",
+			"testAPI",
+			"createRecommendation",
+			"measureAbilityDone",
+			"statusChangeCallback",
+			"testAPI",
+			"console.log",
+			"ability",
+			"interested",
+			"setinterested",
+			"setMeasureQuestionsDone",
+			"setmeasurequestions",
+			"setQuestion",
+			"setQuestions",
+			"getSetQuestions",
 			"getrecom",
 			"measureques",
 			"claar",
@@ -476,34 +559,7 @@
 			"notifyObservers",
 			"squareMargin",
 			"background",
-			"arcgra",
-			"data",
-			"barEnergyClock",
-			"timeFontSize",
-			"currency",
-			"arcGradient",
-			"defs",
-			"timeFontSize",
-			"unitFontSize",
-			"units",
-			"barheight",
-			"barHeight",
-			"barheight",
-			"calcarray",
-			"dataSum",
-			"data",
-			"timefont",
-			"timeFontSize",
-			"blue",
-			"currentTime",
-			"hourscal",
-			"slider",
-			"loadData",
-			"depth",
-			"smooth",
-			"controls",
-			"target",
-			"camera.position"
+			"arcgra"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -521,7 +577,7 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -530,15 +586,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10595,
+						"buffer_size": 11627,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1387,
-								1387
+								2806,
+								2806
 							]
 						],
 						"settings":
@@ -549,59 +605,60 @@
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
+						"translation.x": 250.0,
+						"translation.y": 3186.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "ajax/insertFriend.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 373,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								196,
+								196
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"open_with_edit": true,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.tmLanguage"
+						},
 						"translation.x": 0.0,
-						"translation.y": 324.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "ajax/selectMeasureQuestions.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 143,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								140,
-								140
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/PHP/PHP.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
 					"buffer": 2,
-					"file": "index.php",
+					"file": "ajax/insertUser.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2830,
+						"buffer_size": 341,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1811,
-								1811
+								238,
+								238
 							]
 						],
 						"settings":
@@ -609,15 +666,14 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -626,15 +682,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1134,
+						"buffer_size": 2246,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1134,
-								1134
+								2242,
+								2242
 							]
 						],
 						"settings":
@@ -645,7 +701,7 @@
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 219.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 6,
@@ -653,11 +709,43 @@
 				},
 				{
 					"buffer": 4,
-					"file": "js/view/measureAbilityView.js",
+					"file": "js/view/demographicsView.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1922,
+						"buffer_size": 2313,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								684,
+								684
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"open_with_edit": true,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "js/view/informedConsentView.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2616,
 						"regions":
 						{
 						},
@@ -671,70 +759,6 @@
 						"settings":
 						{
 							"incomplete_sync": null,
-							"open_with_edit": true,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 378.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "js/view/recommendationView.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1963,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1924,
-								1707
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"open_with_edit": true,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "js/view/measureQuestionsView.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2459,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								673,
-								673
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
@@ -744,24 +768,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "js/controller/measureQuestionsController.js",
+					"buffer": 6,
+					"file": "index.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 60,
+						"buffer_size": 3387,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								57,
-								57
+								1664,
+								1664
 							]
 						],
 						"settings":
@@ -769,13 +793,80 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 756.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "js/vendor/facebook.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3481,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3480,
+								3480
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"open_with_edit": true,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1458.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "css/main.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1019,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								870,
+								870
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/CSS/CSS.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 540.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
 					"type": "text"
 				}
 			]

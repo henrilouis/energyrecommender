@@ -4,8 +4,22 @@
    Author's custom styles
    ========================================================================== */
 
+body{
+	background:url(http://subtlepatterns.com/patterns/wood_pattern.png);
+	padding-top:0px;
+}
+
 a {
 	cursor:pointer;
+}
+
+.wrapper{
+	border-top: 4px solid #5bc0de;
+	width: 100%;
+	background: url(http://subtlepatterns.com/patterns/cream_dust.png);
+	margin-bottom: 20px;
+	border-bottom: thin solid #efefef;
+	height:90px;
 }
 
 #legend{
@@ -30,6 +44,18 @@ a {
 	padding-right: 27px;
 }
 
+#mainApplication{
+	background:url(http://subtlepatterns.com/patterns/cream_dust.png);
+	/*border-radius: 10px;*/
+	padding-bottom:20px;
+}
+
+#fbBox{
+	border: thin solid #ccc;
+	float: left;
+	background: #fff;
+	padding: 10px;
+}
 
 
 

@@ -4,10 +4,10 @@ var MeasureAbilityView = function(model, container){
 	/***********************************************************
 					  Variable Declarations
 	***********************************************************/
-
+	var title 					= $( "<h2>Vragen</h2>" );
 	var p 						= $( "<p>Als onderdeel van ons aanbevelingssysteem stellen we u eerst een aantal vragen over uw huidige positie in energiebesparing. </p><p>Dit doen we door een aantal maatregelen voor te stellen waarbij u kunt kiezen of u deze wel of niet uitvoert.</p>" );
 	var hr 						= $( "<hr>" );
-	var h2 						= $( "<h2>Voert u deze maatregel al uit?</h2>" );
+	var h2 						= $( "<h3>Voert u deze maatregel al uit?</h3>" );
 	var list					= $( "<div class='list-group'>" );
 	var item					= $( "<div class='list-group-item'>" );
 	var h3						= $( "<h3 class='list-group-item-heading'>" );
@@ -19,7 +19,7 @@ var MeasureAbilityView = function(model, container){
 		buttonGroup 			.append( noButton, notusefulButton, yesButton );
 		list 					.append( item );
 		item 					.append( h3, description )
-	container.append( p, hr, h2, list, buttonGroup );
+	container.append( title, p, hr, h2, list, buttonGroup );
 
 	/***********************************************************
 						Private Variables
@@ -51,7 +51,7 @@ var MeasureAbilityView = function(model, container){
 		if( args == "measureReady" ){
 			updateMeasure();
 		}
-		if( args == "measureAbilityDone" ){
+		if( args == "recommendationReady" ){
 			container.hide();
 		}
 	}

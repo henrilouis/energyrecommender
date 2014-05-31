@@ -9,6 +9,9 @@
 	$data = $database->insert("users",array(
 
 			"id"			=> $max+1,
+			"facebookId"	=> $_POST['facebookId'],
+			"email"			=> $_POST['email'],
+			"gender"		=> $_POST['gender'],
 			"condition" 	=> $_POST['condition'],
 			
 	));

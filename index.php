@@ -26,11 +26,19 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+    <div class="wrapper">
+        <div class="container">
+            <header class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <h1>Energie-aanbeveling</h1>
+                </div>
+            </header>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row">
-            <div class='col-md-8 col-md-offset-2'>
-                <h1>Energie-aanbeveling</h1>
-                <hr>
+            <div id="mainApplication" class='col-md-8 col-md-offset-2'>
 
                 <div id="informedConsent">
                 </div>
@@ -53,10 +61,16 @@
             </div>
         </div>
     </div>
+
+    <div id="result_friends"></div>
+    <div id="fb-root"></div>
+
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/facebook.js"></script>
 
         <script src="js/main.js"></script>
         <script src="js/rashRecommenderModel.js"></script>

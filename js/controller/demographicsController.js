@@ -2,9 +2,7 @@ var DemographicsController = function( model, view ){
 
 	view.volgendeButton.click(function(){
 		var email = view.emailInput.val();
-		console.log(email);
 		var meedoen = view.meedoenContainer.find("input:checked").val();
-		console.log(meedoen);
 
 		if(email != "" && meedoen != null){
 			model.setEmail(email);

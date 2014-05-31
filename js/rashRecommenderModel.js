@@ -1,4 +1,4 @@
-var RashRecommenderModel = function(){
+var RashRecommenderModel = function( options ){
 
 	/***********************************************************
 							 Options
@@ -10,8 +10,8 @@ var RashRecommenderModel = function(){
 	var defaults = {
 
 		range                   		: 100,
-		measureStepSize					: [25,20,15,10,5], 	// Stepsize for consecutive measures
 		measureRange					: 10,				// Range for each sample measure
+		stepConstant					: 0.375,
 		maxSteps						: 16,
 		maxStepRepeat					: 3,				// Maximum times going back and forth
 		recommendationAllignment		: "center", 		// can either be center, below, above or random
@@ -25,8 +25,9 @@ var RashRecommenderModel = function(){
 	/***********************************************************
 						Variable Declarations
 	***********************************************************/
-	var measures, setQuestions, measureQuestions, currentUserId, 
-		email, currentMeasure, stepDirection, chosenMeasureId,
+	var measures, setQuestions, measureQuestions, currentUserId,
+		facebookId, email, currentMeasure, prevAbility,  
+		chosenMeasureId, stepSize, prevStep, change, lastChange,
 		measureHistory = [], recommendation = [],
 		stepRepeat = 0, currentStep = 0, stepCounter = 0,
 		ability = o.range/2,
@@ -49,10 +50,7 @@ var RashRecommenderModel = function(){
 	// Fill the array with all the questions per measure in the database
 	$.get( "ajax/selectMeasureQuestions.php", function( data ){
 		measureQuestions = $.parseJSON( data );
-		console.log( measureQuestions );
 	});
-	
-	currentUserId = 1; // remove
 	
 
 	/***********************************************************
@@ -97,13 +95,18 @@ var RashRecommenderModel = function(){
 
 	// Create the user, add it to the database, and assign the
 	// experimental condition.
-	createUser = function(){
+	createUser = function( fbid, mail, gender ){
 
 		$.post( "ajax/insertUser.php", 
-			{ 
+			{
+				facebookId: fbid,
+				email: mail,
+				gender: gender,
 				condition: o.recommendationAllignment
 			}).done( function( data ) {
 			currentUserId = data;
+			email = mail;
+			facebookId = fbid;
 		});
 
 		notifyObservers('userCreated');
@@ -125,115 +128,103 @@ var RashRecommenderModel = function(){
 		);
 	}
 
-	// Get a measure to present to the user, check if it's in range and if it hasnt
-	// been shown before
-	newMeasure = function(){
-		if(stepCounter < o.maxSteps){
+	// To add a facebook friend to a user. Accepts the facebook friend object
+	insertFacebookFriend = function( friend ){
+		$.post( "ajax/insertFriend.php", 
+			{ 
+				facebookId: facebookId,
+				friendId: friend.id,
+				friendName: friend.name,
+				//score: score,
+			}
+		);
+	}
 
+	// Get a measure to present to the user, check if it's in range and if it hasnt
+	// been shown before. This one needs to be upgraded to use closest instead of
+	// the range.
+	newMeasure = function(){
+		// Nog even inbouwen dat-ie stopt als de change te klein is
+		if( stepCounter < o.maxSteps ){
+
+			var tempMeasures = [];
 			var selectedMeasures = [];
+
 			for( i=0; i<measures.length; i++ ){
-				if( ( measures[i].difficulty >= ( ability - ( o.measureRange / 2 ) ) ) 
-				 && ( measures[i].difficulty <= ( ability + ( o.measureRange / 2 ) ) ) 
-				 && ( $.inArray(measures[i], measureHistory ) == -1) ){
-					selectedMeasures.push(measures[i]);
+				if( $.inArray(measures[i], measureHistory ) == -1){
+					tempMeasures.push(measures[i]);
 				}
 			}
 
-			// Check if results come up, else we're done
-			if( selectedMeasures.length > 0 ){
-				var randomSelection = Math.floor( Math.random() * selectedMeasures.length );
-				currentMeasure = selectedMeasures[randomSelection];
-				measureHistory.push( selectedMeasures[randomSelection] );
-				stepCounter++;
-				notifyObservers( 'measureReady' );
+			// Taking only the 5 closest measures, this number might have to be lower
+			// when the ability is further away from the center, because there are
+			// less measures there. When we implement the first four questions the 
+			// whole iteration should be gone! <------------------------
+			// This seems to work pretty well though
+			for ( i=0; i<5; i++ ){
+				var closest = getClosest( tempMeasures, ability );
+				selectedMeasures.push( closest );
+				// Remove the recommendation from the temp list
+				tempMeasures = $.grep( tempMeasures, function( value ) {
+					return value != closest;
+				});
 			}
-			else{
-				notifyObservers( 'measureAbilityDone' );
-				createRecommendation();
-			}
+
+			// Select a measure at random
+			var randomSelection = Math.floor( Math.random() * selectedMeasures.length );
+			currentMeasure = selectedMeasures[randomSelection];
+			measureHistory.push( selectedMeasures[randomSelection] );
+			stepCounter++;
+			notifyObservers( 'measureReady' );
 			
 		}
 		else{
-			notifyObservers( 'measureAbilityDone' );
+			// Create the recommendation when the conditions are met
 			createRecommendation();
 		}
 	}
 
 	// Used when the user votes, can take either "yes", "no" or "nvt" as parameters.
 	setUserMeasure = function( value ){
-		var change;
-		// If the user is already applying the measure
-		if( value == "yes" ){
-
-			// Check if last time the user went in the oppsite direction
-			// and if the step hasn't been repeated too often
-			if( stepDirection == "-" ){
-				stepRepeat ++;
-				if( stepRepeat >= o.maxStepRepeat ){
-					stepRepeat = 0;
-					if( currentStep < o.measureStepSize.length - 1 ){
-						currentStep ++;
-					}
-				}
-			}
-			else if( stepDirection != null ){
-				if( currentStep < o.measureStepSize.length - 1 ){
-					currentStep ++;
-				}
-			}
-			
-			// Set the last direction
-			stepDirection = "+";
-
-			// Check if ability hasn't reached the max/min and update it
-			change = o.measureStepSize[ currentStep ]
-			if( ( ability + change ) <= o.range ){
-				ability += change;
-			}
-			else{
-				change = o.range - ability;
-				ability = o.range;
-			}
-			
-		}
-		// If the user is not applying the measure
-		else if (value == "no"){
-
-			// Check if last time the user went in the oppsite direction
-			// and if the step hasn't been repeated too often
-			if( stepDirection == "+" ){
-				stepRepeat ++;
-				if( stepRepeat >= o.maxStepRepeat ){
-					stepRepeat = 0;
-					if( currentStep < o.measureStepSize.length - 1 ){
-						currentStep ++;
-					}
-				}
-			}
-			else if( stepDirection != null ){
-				if( currentStep < o.measureStepSize.length - 1 ){
-					currentStep ++;
-				}
-			}
-
-			// Set the last direction
-			stepDirection = "-";
-
-			// Check if ability hasn't reached the max/min and update it
-			change = -o.measureStepSize[ currentStep ];
-			if( ( ability + change ) >= 0 ){
-				ability += change;
-			}
-			else{
-				change = -ability;
-				ability = 0;
-			}
-			
-		}
-		// If the measure would not be useful or possible
-		else if ( value == "nvt" ){
+		if( value == "nvt" ){
 			change = 0;
+			lastChange = 0;
 		}
+		else{
+			// Check if last time the user went in the oppsite direction
+			// and if the step hasn't been repeated too often
+			if( prevStep == null ){
+				change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );
+			}
+			else if( prevStep != value ){
+				stepRepeat ++;
+				if( stepRepeat >= o.maxStepRepeat ){
+					stepRepeat = 0;
+					currentStep ++;
+					change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );
+				}
+				else{
+					change = lastChange;
+				}
+			}
+			else{
+				stepRepeat = 0;
+				currentStep ++;
+				change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );
+			}
+
+			// Save the last direction and change
+			prevStep = value;
+			lastChange = change;
+
+			// Apply the change
+			// Set to minus or plus and apply change
+			change = ( value == "yes" ? change : -change );
+			ability += change;
+			
+		}
+
+		console.log(ability);
 
 		$.post( "ajax/insertUserMeasure.php", 
 			{ 
@@ -245,10 +236,7 @@ var RashRecommenderModel = function(){
 
 			// When measure is saved get the next one
 			newMeasure();
-
 		});
-
-		
 	}
 
 	// Create the recommendation from the ability depending
@@ -273,17 +261,37 @@ var RashRecommenderModel = function(){
 			}
 		}
 		
-		// Still randomize the recommendations, this shuffles the array
-		
 		if( o.recommendationAllignment == "center" || o.recommendationAllignment == "below" || o.recommendationAllignment == "above" ){
-			for( i=0; i<o.recommendationNumber; i++ ){
-				var closest = getClosest( recomArray, ability );
-				recommendation.push( closest );
-				// Remove the recommendation from the temp list
-				recomArray = $.grep( recomArray, function( value ) {
-					return value != closest;
-				});
+			
+			// Check if there are enough available recommendations and use them
+			// This might not be the case but i'm not sure what to do with this yet.
+			if( recomArray.length >= o.recommendationNumber ){
+				for( i=0; i<o.recommendationNumber; i++ ){
+
+					var closest = getClosest( recomArray, ability );
+					recommendation.push( closest );
+					// Remove the recommendation from the temp list
+					recomArray = $.grep( recomArray, function( value ) {
+						return value != closest;
+					});
+
+				}
 			}
+			else{
+				for( i=0; i<recomArray.length; i++ ){
+
+					var closest = getClosest( recomArray, ability );
+					recommendation.push( closest );
+					// Remove the recommendation from the temp list
+					recomArray = $.grep( recomArray, function( value ) {
+						return value != closest;
+					});
+					
+				}
+			}
+
+			
+			// Still randomize the recommendations, this shuffles the array
 			shuffle(recommendation);
 		}
 		else{
@@ -303,8 +311,6 @@ var RashRecommenderModel = function(){
 				position: i+1
 			});
 		}
-
-		console.log(recommendation);
 
 		notifyObservers( "recommendationReady" );
 	}
@@ -376,6 +382,7 @@ var RashRecommenderModel = function(){
 
 	this.createUser 					= createUser;
 	this.updateUser 					= updateUser;
+	this.insertFacebookFriend			= insertFacebookFriend;
 	this.newMeasure 					= newMeasure;
 	this.createRecommendation 			= createRecommendation;
 

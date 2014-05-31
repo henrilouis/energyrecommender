@@ -46,7 +46,7 @@ var DemographicsView = function( model, container ){
 
 	this.update = function( args ){
 
-		if( args == "setQuestionsDone" ){
+		if( args == "measureQuestionsDone" ){
 			container.show();
 		}
 	}

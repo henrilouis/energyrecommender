@@ -4,13 +4,13 @@ var MeasureQuestionsView = function( model, container ){
 					  Variable Declarations
 	***********************************************************/
 
-	var h2 						= $( "<h2>Bedankt voor uw gegevens!</h2>" );
+	var h2 						= $( "<h2>Vragenlijst aanbevelingen</h2>" );
 	var p 						= $( "<p>Hier volgen een kort aantal vragen over elke aanbeveling. Vul in wat het beste bij u past.</p>" );
 	var hr 						= $( '<hr>' );
 	var measureQuestionList		= $( "<div class='list-group'>" );
 	var volgendeButton	 		= $( "<a class='btn btn-primary pull-right' role='button'>Volgende &raquo;</a>" );
 
-	container.append( p, hr, measureQuestionList, volgendeButton );
+	container.append( h2, p, hr, measureQuestionList, volgendeButton );
 
 	/***********************************************************
 						Private Variables
@@ -51,7 +51,16 @@ var MeasureQuestionsView = function( model, container ){
 						radio.attr( 'value', k+1 );
 						radio.attr( 'name', 'r'+recommendation[i].id+'q'+measureQuestions[j].id);
 						label.append( radio );
-						label.append( k+1 );
+						if( measureQuestions[j].scale > 2 ){
+							label.append( k+1 );
+						}
+						else if( k == 0 ){
+							label.append( "Ja" );
+						}
+						else if( k == 1) {
+							label.append( "Nee" );
+						}
+						
 					radioContainer.append( label );
 				}
 				question.append( radioContainer );
@@ -77,8 +86,11 @@ var MeasureQuestionsView = function( model, container ){
 	model.addObserver( this );
 
 	this.update = function( args ){
-		if( args == "measureChosen" ){
+		if( args == "recommendationReady" ){
 			updateMeasureQuestionList();
+		}
+
+		if( args == "setQuestionsDone"){
 			container.show();
 		}
 

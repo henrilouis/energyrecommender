@@ -4,14 +4,14 @@ var SetQuestionsView = function( model, container ){
 					  Variable Declarations
 	***********************************************************/
 
-	var h2 						= $( "<h2>Bedankt voor uw gegevens!</h2>" );
+	var h2 						= $( "<h2>Vragenlijst aanbevelingsset</h2>" );
 	var p 						= $( "<p>Hier volgen een kort aantal vragen over de set aanbevelingen. Vul in wat het beste bij u past.</p>" );
 	var hr 						= $( '<hr>' );
 	var measureQuestionList		= $( "<div class='list-group'>" );
 	var volgendeButton	 		= $( "<a class='btn btn-primary pull-right' role='button'>Volgende &raquo;</a>" );
 	var questions;
 
-	container.append( p, hr, measureQuestionList, volgendeButton );
+	container.append( h2, p, hr, measureQuestionList, volgendeButton );
 
 	/***********************************************************
 						Private Variables
@@ -66,7 +66,7 @@ var SetQuestionsView = function( model, container ){
 
 	this.update = function( args ){
 
-		if( args == "measureQuestionsDone" ){
+		if( args == "measureChosen" ){
 			container.show();
 		}
 		if( args == "setQuestionsReady" ){

@@ -4,7 +4,7 @@ var RecommendationView = function( model,container ){
 					  Variable Declarations
 	***********************************************************/
 
-	var h2 						= $( "<h2>Bedankt voor uw gegevens!</h2>" );
+	var h2 						= $( "<h2>Uw aanbevelingen</h2>" );
 	var p 						= $( "<p>Wij bevelen u de volgende maatregelen aan om uw huis energiezuiniger te maken. Klik de maatregel aan die u het waarschijnlijkst zou uitvoeren.</p>" );
 	var hr 						= $( "<hr>" );
 	var recommendationList		= $( "<div id='recommendationList' class='list-group'>" );
