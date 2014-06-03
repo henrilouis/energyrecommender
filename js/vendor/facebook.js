@@ -33,16 +33,24 @@ function getFriends(){
       if (response && !response.error) {
         /* handle the result */
         console.log(response);
-
-        // turned off for now to not overflow the database with friends
-        
-        /*
         $.each( response.data, function( index,value ){
-          model.insertFacebookFriend( value );
-        });*/
+          getMutualFriends(value);
+        });
       }
     }
-);
+  );
+}
+
+function getMutualFriends( friend ){
+  FB.api(
+    "/v1.0/me/mutualfriends/"+friend.id,
+    function (response) {
+      if (response && !response.error) {
+        /* handle the result */
+        model.insertFacebookFriend( friend,response.data.length );
+      }
+    }
+  );
 }
 
 // This function is called when someone finishes with the Login

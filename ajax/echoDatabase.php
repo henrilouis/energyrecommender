@@ -3,11 +3,11 @@
 	require 'medoo.min.php';
 
 	$database = new medoo();
-
+	
 	/*****************************************
 			Script to echo the DB
 	*****************************************/
-
+	
 	function echoTable( $name, $database ){
 
 		$data = $database->select($name,"*");
@@ -39,5 +39,5 @@
 	echoTable( "userMeasureQuestions",$database );
 	echoTable( "userMeasureRecommendations",$database );
 	echoTable( "userSetQuestions",$database );
-
+	
 ?>

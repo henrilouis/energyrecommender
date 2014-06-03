@@ -27,12 +27,11 @@ var RashRecommenderModel = function( options ){
 	***********************************************************/
 	var measures, setQuestions, measureQuestions, currentUserId,
 		facebookId, email, currentMeasure, prevAbility,  
-		chosenMeasureId, stepSize, prevStep, change, lastChange,
+		chosenMeasureId, stepSize, prevStep, lastChange,
 		measureHistory = [], recommendation = [],
-		stepRepeat = 0, currentStep = 0, stepCounter = 0,
+		change = 25 ,stepRepeat = 0, currentStep = 0, stepCounter = 0,
 		ability = o.range/2,
-		interested = false,
-		currentStage = "informedConsent";
+		interested = false;
 
 	// Get all the required data from the database
 
@@ -129,13 +128,13 @@ var RashRecommenderModel = function( options ){
 	}
 
 	// To add a facebook friend to a user. Accepts the facebook friend object
-	insertFacebookFriend = function( friend ){
+	insertFacebookFriend = function( friend, score ){
 		$.post( "ajax/insertFriend.php", 
-			{ 
+			{
 				facebookId: facebookId,
 				friendId: friend.id,
 				friendName: friend.name,
-				//score: score,
+				score: score,
 			}
 		);
 	}
@@ -144,8 +143,8 @@ var RashRecommenderModel = function( options ){
 	// been shown before. This one needs to be upgraded to use closest instead of
 	// the range.
 	newMeasure = function(){
-		// Nog even inbouwen dat-ie stopt als de change te klein is
-		if( stepCounter < o.maxSteps ){
+
+		if( stepCounter < o.maxSteps && Math.abs( change ) > 1 ){
 
 			var tempMeasures = [];
 			var selectedMeasures = [];
@@ -191,17 +190,18 @@ var RashRecommenderModel = function( options ){
 			lastChange = 0;
 		}
 		else{
+			// Check if this is the first step
+			if( prevStep == null ){
+				change = Math.pow( 0.85, currentStep ) * ( o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) ) );
+			}
 			// Check if last time the user went in the oppsite direction
 			// and if the step hasn't been repeated too often
-			if( prevStep == null ){
-				change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );
-			}
 			else if( prevStep != value ){
 				stepRepeat ++;
 				if( stepRepeat >= o.maxStepRepeat ){
 					stepRepeat = 0;
 					currentStep ++;
-					change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );
+					change = Math.pow( 0.85, currentStep ) * ( o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) ) );
 				}
 				else{
 					change = lastChange;
@@ -210,14 +210,13 @@ var RashRecommenderModel = function( options ){
 			else{
 				stepRepeat = 0;
 				currentStep ++;
-				change = Math.pow( 0.85, currentStep ) * o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) );
+				change = Math.pow( 0.85, currentStep ) * ( o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) ) );
 			}
 
 			// Save the last direction and change
 			prevStep = value;
 			lastChange = change;
 
-			// Apply the change
 			// Set to minus or plus and apply change
 			change = ( value == "yes" ? change : -change );
 			ability += change;

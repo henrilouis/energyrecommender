@@ -15,7 +15,7 @@
 
 			"facebookId" 				=> $_POST['facebookId'],
 			"friendId"					=> $_POST['friendId'],
-			//"score" 					=> $_POST['score'],
+			"score" 					=> $_POST['score'],
 
 	));
 
