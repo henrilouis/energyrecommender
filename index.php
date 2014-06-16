@@ -11,6 +11,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/star-rating.min.css">
+        <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
         <style>
             body {
                 padding-top: 50px;
@@ -30,7 +32,7 @@
         <div class="container">
             <header class="row">
                 <div class="col-md-8 col-md-offset-2">
-                    <h1>Energie-aanbeveling</h1>
+                    <h1>Energie-advies</h1>
                 </div>
             </header>
         </div>
@@ -38,6 +40,9 @@
 
     <div class="container">
         <div class="row">
+            <div id="boxHeader" class='col-md-8 col-md-offset-2'>
+                
+            </div>
             <div id="mainApplication" class='col-md-8 col-md-offset-2'>
 
                 <div id="informedConsent">
@@ -71,6 +76,7 @@
 
         <script src="js/vendor/bootstrap.min.js"></script>
         <script src="js/vendor/facebook.js"></script>
+        <script src="js/vendor/star-rating.min.js"></script>
 
         <script src="js/main.js"></script>
         <script src="js/rashRecommenderModel.js"></script>
@@ -92,5 +98,10 @@
 
         <script src="js/view/demographicsView.js"></script>
         <script src="js/controller/demographicsController.js"></script>
+
+        <script src="js/view/headerView.js"></script>
+        <script src="js/controller/headerController.js"></script>
+
+
     </body>
 </html>

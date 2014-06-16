@@ -4,12 +4,9 @@ var RecommendationView = function( model,container ){
 					  Variable Declarations
 	***********************************************************/
 
-	var h2 						= $( "<h2>Uw aanbevelingen</h2>" );
-	var p 						= $( "<p>Wij bevelen u de volgende maatregelen aan om uw huis energiezuiniger te maken. Klik de maatregel aan die u het waarschijnlijkst zou uitvoeren.</p>" );
-	var hr 						= $( "<hr>" );
 	var recommendationList		= $( "<div id='recommendationList' class='list-group'>" );
 
-	container.append( h2, p, hr, recommendationList );
+	container.append( recommendationList );
 	
 	/***********************************************************
 						Private Variables
@@ -25,7 +22,7 @@ var RecommendationView = function( model,container ){
 				a.attr('id', recommendation[i].id);
 			var title 			= $("<h4 class='list-group-item-heading'>");
 				title.html(recommendation[i].name);
-			var content			= $("<p class='list-group-item-text'>");
+			var content			= $("<p style='font-style: italic;' class='list-group-item-text'>");
 				content.html(recommendation[i].description)
 			
 			a.append( title,content );

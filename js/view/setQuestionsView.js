@@ -4,14 +4,11 @@ var SetQuestionsView = function( model, container ){
 					  Variable Declarations
 	***********************************************************/
 
-	var h2 						= $( "<h2>Vragenlijst aanbevelingsset</h2>" );
-	var p 						= $( "<p>Hier volgen een kort aantal vragen over de set aanbevelingen. Vul in wat het beste bij u past.</p>" );
-	var hr 						= $( '<hr>' );
 	var measureQuestionList		= $( "<div class='list-group'>" );
-	var volgendeButton	 		= $( "<a class='btn btn-primary pull-right' role='button'>Volgende &raquo;</a>" );
+	var volgendeButton	 		= $( "<a class='btn btn-default pull-right' role='button'>Volgende &raquo;</a>" );
 	var questions;
 
-	container.append( h2, p, hr, measureQuestionList, volgendeButton );
+	container.append( measureQuestionList, volgendeButton );
 
 	/***********************************************************
 						Private Variables
@@ -22,17 +19,12 @@ var SetQuestionsView = function( model, container ){
 		var questions 			= model.getSetQuestions();
 		measureQuestionList.empty();
 
-		var helemaalOneens			= $( "<span>Helemaal oneens</span>" );
-		var helemaalEens 			= $( "<span>Helemaal eens</span>" );
-		var neutraal				= $( "<span>Neutraal</span>" );
-		var legend 					= $( "<div id='legend'>" );
-			legend 					.append( helemaalOneens, neutraal, helemaalEens )
-			measureQuestionList.append( legend );
-
+		var legend 					= $( "<div id='legend'><span>Helemaal oneens</span><span>Neutraal</span><span>Helemaal eens</span>" );
+		var clearfix				= $( '<div class="clearfix">' );
 		$.each( questions, function(key, value) {
 			var item 			= $( "<div class='list-group-item'>" );
 				item 			.attr( 'id', value.id );
-			var text 			= $( "<p style='margin-top:5px; display:inline-block; width:50%' class='list-group-item-text'>" );
+			var text 			= $( "<p style='margin-top:5px; float:left; width:50%' class='list-group-item-text'>" );
 				text 			.html(value.question)
 				item 			.append(text);
 			var radioContainer  = $( "<div class='radioContainer'>" );
@@ -43,11 +35,16 @@ var SetQuestionsView = function( model, container ){
 						radio.attr( 'value', i+1 );
 						radio.attr( 'name', value.id );
 						label.append( radio );
-						label.append( i+1 );
+						//label.append( i+1 );
 					radioContainer.append( label );
 			}
 			item.append( radioContainer );
+			if( key % 6 === 0 ){
+				legend.clone().appendTo( measureQuestionList );
+			}
+			clearfix.clone().appendTo( item );
 			measureQuestionList.append( item );
+			
 		});
 
 	}	

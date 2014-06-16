@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"recommen",
+				"recommendationAllignment"
+			],
+			[
+				"selected",
+				"selectedMeasures"
+			],
+			[
 				"last",
 				"lastChange"
 			],
@@ -54,10 +62,6 @@
 			[
 				"measur",
 				"measureQuestions"
-			],
-			[
-				"recommen",
-				"recommendationList"
 			],
 			[
 				"not",
@@ -203,55 +207,55 @@
 			"file": "js/rashRecommenderModel.js",
 			"settings":
 			{
-				"buffer_size": 11633,
+				"buffer_size": 12559,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "sftp-config.json",
+			"file": "js/view/headerView.js",
 			"settings":
 			{
-				"buffer_size": 1353,
+				"buffer_size": 1853,
 				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "ajax/insertFriend.php",
-			"settings":
-			{
-				"buffer_size": 373,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "ajax/insertUser.php",
-			"settings":
-			{
-				"buffer_size": 341,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "js/main.js",
-			"settings":
-			{
-				"buffer_size": 2246,
-				"line_ending": "Unix"
 			}
 		},
 		{
 			"file": "js/view/demographicsView.js",
 			"settings":
 			{
-				"buffer_size": 2313,
+				"buffer_size": 2481,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "js/view/informedConsentView.js",
+			"file": "js/controller/demographicsController.js",
 			"settings":
 			{
-				"buffer_size": 2616,
+				"buffer_size": 555,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/view/recommendationView.js",
+			"settings":
+			{
+				"buffer_size": 1719,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/view/setQuestionsView.js",
+			"settings":
+			{
+				"buffer_size": 2363,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/controller/headerController.js",
+			"settings":
+			{
+				"buffer_size": 50,
 				"line_ending": "Windows"
 			}
 		},
@@ -259,23 +263,39 @@
 			"file": "index.php",
 			"settings":
 			{
-				"buffer_size": 3387,
+				"buffer_size": 3834,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "ajax/medoo.min.php",
+			"file": "js/view/informedConsentView.js",
 			"settings":
 			{
-				"buffer_size": 13806,
-				"line_ending": "Unix"
+				"buffer_size": 2928,
+				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "ajax/echoDatabase.php",
+			"file": "js/view/measureAbilityView.js",
 			"settings":
 			{
-				"buffer_size": 924,
+				"buffer_size": 2036,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/view/measureQuestionsView.js",
+			"settings":
+			{
+				"buffer_size": 4112,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/controller/informedConsentController.js",
+			"settings":
+			{
+				"buffer_size": 390,
 				"line_ending": "Windows"
 			}
 		},
@@ -283,15 +303,23 @@
 			"file": "js/vendor/facebook.js",
 			"settings":
 			{
-				"buffer_size": 3481,
+				"buffer_size": 3873,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "js/main.js",
+			"settings":
+			{
+				"buffer_size": 2334,
+				"line_ending": "Unix"
 			}
 		},
 		{
 			"file": "css/main.css",
 			"settings":
 			{
-				"buffer_size": 1019,
+				"buffer_size": 1404,
 				"line_ending": "Unix"
 			}
 		}
@@ -360,32 +388,42 @@
 	},
 	"file_history":
 	[
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/echoDatabase.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/css/main.css",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/measureAbilityView.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/measureQuestionsView.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureQuestionsController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/echoDatabase.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectNewMeasures.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserNewMeasure.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/setQuestionsController.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/setQuestionsView.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/informedConsentController.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/vendor/facebook.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/medoo.min.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/informedConsentView.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/index.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/main.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUser.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertFriend.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/sftp-config.json",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserMeasure.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectMeasures.php",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/css/star-rating.min.css",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/vendor/star-rating.min.js",
+		"/D/Downloads/measures.sql",
+		"/C/Users/Henri/Dropbox/Tue/HTI/Research Project/hidden_withfit_2.txt",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/demographicsView.js",
+		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/informedConsentController.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/recommendationView.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/demographicsController.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureQuestionsController.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/view/informedConsentView.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/setQuestionsController.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/updateUser.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectMeasureQuestions.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/measureAbilityController.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/controller/recommendationController.js",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/css/main.css",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertRecommendation.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserMeasure.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/js/main.js",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserSetQuestion.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectSetQuestions.php",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/insertUserMeasureQuestion.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/selectMeasures.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/medoo.min.php",
 		"/C/Users/Henri/Dropbox/Tue/HTI/Research Project/Oude Experiment/algorithm.php",
-		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/sftp-config.json",
 		"/C/Users/Henri/Dropbox/GitHub/energyrecommender/ajax/creatUser.php",
 		"/C/Users/Henri/Dropbox/Werk/Sites/dikbelegd/domains/dikbelegd.nl/htdocs/www/parts/adduser.php",
 		"/C/Users/Henri/Dropbox/Werk/Sites/dikbelegd/domains/dikbelegd.nl/htdocs/www/parts/class.MySQL.php",
@@ -453,6 +491,49 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"inline",
+			"clear",
+			"console.log",
+			"rand",
+			"setArray",
+			"nr",
+			"split",
+			"setarray",
+			"count",
+			"numberofrec",
+			"nr",
+			"console.log",
+			"isloggedIn",
+			"location",
+			"reload",
+			"console.log",
+			"zelfs",
+			"led",
+			",",
+			"5",
+			",",
+			"stepcounter",
+			"setArray",
+			"nvt",
+			"setArray",
+			"measurerange",
+			"measureRange",
+			"recommendationNumber",
+			"recommendationNumber\n",
+			"console.l",
+			"measureQuestions",
+			"prevAbility",
+			"lastChange",
+			"prevStep",
+			"stepSize",
+			"currentMeasure",
+			"currentMeasure\n",
+			"stepCounter",
+			"maxSteps",
+			"range",
+			"ability",
+			"measures",
+			"insertfacebook",
 			"currentStage",
 			"stepDirection",
 			"startingStepSize",
@@ -537,50 +618,7 @@
 			"fontColor",
 			"backgroundColor",
 			"parent",
-			"oldlineGraph3",
-			"centerwidth",
-			"selector",
-			"humans",
-			"background",
-			"stroke=\"#000000\"",
-			"stroke",
-			"getColor",
-			"items",
-			"convertData",
-			"prevSelection",
-			"convertData",
-			"data",
-			"scrollCalendar",
-			"data",
-			"ipad",
-			"selector",
-			"15",
-			"ios",
-			"bezierClock",
-			"#calendar",
-			"clockUpdate",
-			"width",
-			"data",
-			"data.lengt",
-			"calendarBool",
-			"scroll",
-			"domainOffset",
-			"clockUpdate",
-			"timefontsize",
-			"dateFontSize",
-			"o.timefont",
-			"selectedDate",
-			"selectDate",
-			"model.getSelectedDate()",
-			"selectedDate",
-			"selectDate",
-			"selection",
-			"bootstrap",
-			"calendar",
-			"text",
-			"notifyObservers",
-			"squareMargin",
-			"background"
+			"oldlineGraph3"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -588,6 +626,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"  "
 		],
 		"reverse": false,
 		"show_context": true,
@@ -598,7 +637,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -607,15 +646,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11633,
+						"buffer_size": 12559,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1116,
-								1116
+								2874,
+								2874
 							]
 						],
 						"settings":
@@ -627,60 +666,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 108.0,
+						"translation.y": 1466.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "sftp-config.json",
+					"file": "js/view/headerView.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1353,
+						"buffer_size": 1853,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								482,
-								490
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JSON.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "ajax/insertFriend.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 373,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								196,
-								196
+								1836,
+								1836
 							]
 						],
 						"settings":
@@ -689,30 +695,191 @@
 							"open_with_edit": true,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/HTML/HTML.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.x": 673.0,
+						"translation.y": 810.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "ajax/insertUser.php",
+					"buffer": 2,
+					"file": "js/view/demographicsView.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 341,
+						"buffer_size": 2481,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								238,
-								238
+								816,
+								816
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 54.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "js/controller/demographicsController.js",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 555,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "js/view/recommendationView.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1719,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								313,
+								313
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "js/view/setQuestionsView.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2363,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1017,
+								1017
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 324.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "js/controller/headerController.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 50,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								50,
+								50
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"open_with_edit": true,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3834,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								776,
+								776
 							]
 						],
 						"settings":
@@ -721,6 +888,39 @@
 							"remote_loading": false,
 							"synced": false,
 							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 54.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "js/view/informedConsentView.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2928,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2529,
+								2529
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
@@ -731,83 +931,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "js/main.js",
+					"buffer": 9,
+					"file": "js/view/measureAbilityView.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2246,
+						"buffer_size": 2036,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2242,
-								2242
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 219.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "js/view/demographicsView.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2313,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								684,
-								684
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"open_with_edit": true,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "js/view/informedConsentView.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2616,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1920,
-								1920
+								252,
+								252
 							]
 						],
 						"settings":
@@ -820,26 +957,58 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "js/view/measureQuestionsView.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4112,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1146,
+								1146
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 216.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "index.php",
+					"buffer": 11,
+					"file": "js/controller/informedConsentController.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3387,
+						"buffer_size": 390,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1701,
-								1701
+								168,
+								168
 							]
 						],
 						"settings":
@@ -847,102 +1016,36 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 504.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "ajax/medoo.min.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 13806,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								13806,
-								13806
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
-					"file": "ajax/echoDatabase.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 924,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								322,
-								322
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/PHP/PHP.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
+					"buffer": 12,
 					"file": "js/vendor/facebook.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3481,
+						"buffer_size": 3873,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3480,
-								3480
+								1979,
+								1981
 							]
 						],
 						"settings":
 						{
 							"incomplete_sync": null,
-							"open_with_edit": true,
 							"remote_loading": false,
 							"synced": false,
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
@@ -950,27 +1053,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1458.0,
+						"translation.y": 1008.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
-					"file": "css/main.css",
+					"buffer": 13,
+					"file": "js/main.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1019,
+						"buffer_size": 2334,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								870,
-								870
+								713,
+								713
 							]
 						],
 						"settings":
@@ -978,13 +1081,46 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/CSS/CSS.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 0.0,
-						"translation.y": 540.0,
+						"translation.x": 51.0,
+						"translation.y": 343.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "css/main.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1404,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								946,
+								946
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 576.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
 					"type": "text"
 				}
 			]

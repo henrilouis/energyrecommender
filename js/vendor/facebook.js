@@ -1,5 +1,22 @@
 var FacebookApi = function( model ){
-  // This is called with the results from from FB.getLoginStatus().
+// This is called with the results from from FB.getLoginStatus().
+
+var loggedIn = false;
+
+var isLoggedIn = function(){
+  return loggedIn;
+}
+this.isLoggedIn = isLoggedIn;
+
+// This function is called when someone finishes with the Login
+// Button.  See the onlogin handler attached to it in the sample
+// code below.
+function checkLoginState() {
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+}
+
 function statusChangeCallback(response) {
   //console.log('statusChangeCallback');
   //sole.logsole.log(response);
@@ -9,22 +26,24 @@ function statusChangeCallback(response) {
   // for FB.getLoginStatus().
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
+    loggedIn = true;
     testAPI();
-    
-    model.newMeasure();
-    
+    $("#fbloginbtn").hide();
+    $("#fblogout").show();
 
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
-    document.getElementById('status').innerHTML = 'Please log ' +
-      'into this app.';
   } else {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
-    document.getElementById('status').innerHTML = 'Please log ' +
-      'into Facebook.';
   }
 }
+
+var start = function(){
+  createUser();
+  model.newMeasure();
+}
+this.start = start;
 
 function getFriends(){
   FB.api(
@@ -32,7 +51,7 @@ function getFriends(){
     function (response) {
       if (response && !response.error) {
         /* handle the result */
-        console.log(response);
+        // console.log(response);
         $.each( response.data, function( index,value ){
           getMutualFriends(value);
         });
@@ -53,14 +72,7 @@ function getMutualFriends( friend ){
   );
 }
 
-// This function is called when someone finishes with the Login
-// Button.  See the onlogin handler attached to it in the sample
-// code below.
-function checkLoginState() {
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-}
+
 
 window.fbAsyncInit = function() {
 FB.init({
@@ -100,8 +112,8 @@ FB.getLoginStatus(function(response) {
 
 // Here we run a very simple test of the Graph API after login is
 // successful.  See statusChangeCallback() for when this call is made.
-function testAPI() {
-  //console.log('Welcome!  Fetching your information.... ');
+
+function createUser(){
   FB.api('/me', function(response) {
     //console.log(response);
     var gender;
@@ -112,10 +124,22 @@ function testAPI() {
       gender = 0;
     }
     model.createUser(response.id, response.email, gender);
+    getFriends();
+  });
+}
+
+function logout(){
+  FB.logout(function(response) {
+      location.reload();
+  });
+}
+this.logout = logout;
+
+function testAPI() {
+  //console.log('Welcome!  Fetching your information.... ');
+  FB.api('/me', function(response) {
     document.getElementById('status').innerHTML =
-      'Thanks for logging in, ' + response.name + '!';
-      getFriends();
+      'Ingelogd als ' + response.name + '!';
   });
 }
 }
-

@@ -13,25 +13,41 @@ a {
 	cursor:pointer;
 }
 
+h1{
+	font-family: 'Lato', sans-serif;
+	text-transform: uppercase;
+}
+
+h1 small{
+	font-family: Arial, Helvetica, Sans-serif;
+	font-weight: 500;
+	line-height: 1.1;
+	color: inherit;	
+}
+
 .wrapper{
-	border-top: 4px solid #5bc0de;
 	width: 100%;
-	background: url(http://subtlepatterns.com/patterns/cream_dust.png);
-	margin-bottom: 20px;
-	border-bottom: thin solid #efefef;
+	margin-bottom: 40px;
+	background: rgba(255,255,255,0.4);
 	height:90px;
+	color:#5bc0de;
+}
+
+#measureAbility h3.text-center{
+	margin-top: 10px;
+	margin-bottom: 25px;
+}
+
+#setQuestions{
+	margin-top: -20px;
 }
 
 #legend{
 	margin-left: 50%;
 	font-size: 12px;
-	margin-bottom: -10px;
-	margin-top: 10px;
+	margin-bottom: 15px;
+	margin-top: 15px;
 	text-align: center;
-}
-
-#setQuestions #legend{
-	margin-bottom: 0px;
 }
 
 .radioContainer{
@@ -46,8 +62,9 @@ a {
 
 #mainApplication{
 	background:url(http://subtlepatterns.com/patterns/cream_dust.png);
-	/*border-radius: 10px;*/
 	padding-bottom:20px;
+	padding-top:20px;
+	box-shadow: 0px -3px 3px rgba(1,1,1,0.1);
 }
 
 #fbBox{
@@ -57,8 +74,20 @@ a {
 	padding: 10px;
 }
 
+#boxHeader{
+	background: #5bc0de;
+	color: #fff;
+	padding-bottom:15px;
+}
 
+#boxHeader h2{
+	font-family: 'Lato', sans-serif;
+	text-transform: uppercase;
+}
 
+#boxHeader p{
+	font-weight:bold;
+}
 
 
 

@@ -39,5 +39,8 @@
 	echoTable( "userMeasureQuestions",$database );
 	echoTable( "userMeasureRecommendations",$database );
 	echoTable( "userSetQuestions",$database );
+
+	echoTable( "friends",$database );
+	echoTable( "userFriends",$database );
 	
 ?>

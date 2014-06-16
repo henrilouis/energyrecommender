@@ -9,13 +9,11 @@ var RashRecommenderModel = function( options ){
 
 	var defaults = {
 
-		range                   		: 100,
-		measureRange					: 10,				// Range for each sample measure
-		stepConstant					: 0.375,
-		maxSteps						: 16,
-		maxStepRepeat					: 3,				// Maximum times going back and forth
+		measurSetSize					: 7,				// Size for each sample measure
+		numberOfRecommendations			: 7,
 		recommendationAllignment		: "center", 		// can either be center, below, above or random
-		recommendationNumber			: 7,
+		logitSize  						: 13.44519164,		// the size of a logit in the used scale
+		newMeasureNumber				: 2,
 
 	};
 
@@ -25,12 +23,12 @@ var RashRecommenderModel = function( options ){
 	/***********************************************************
 						Variable Declarations
 	***********************************************************/
-	var measures, setQuestions, measureQuestions, currentUserId,
-		facebookId, email, currentMeasure, prevAbility,  
-		chosenMeasureId, stepSize, prevStep, lastChange,
-		measureHistory = [], recommendation = [],
+	var measures, newMeasures, setQuestions, measureQuestions, currentUserId,
+		facebookId, email, currentMeasure, chosenMeasureId, numberOfSets,
+		measureHistory = [], recommendation = [], selectedMeasures = [],
+		setArray = [], abilitySet = [],
 		change = 25 ,stepRepeat = 0, currentStep = 0, stepCounter = 0,
-		ability = o.range/2,
+		ability = 0, yes = 0, nvt = 0,
 		interested = false;
 
 	// Get all the required data from the database
@@ -38,7 +36,23 @@ var RashRecommenderModel = function( options ){
 	// Fill the array with all the measures in the database
 	$.get( "ajax/selectMeasures.php", function( data ){
 		measures = $.parseJSON( data );
+		// Sort according to difficulty
+		measures = measures.sort(function (a,b){
+			return a.difficulty-b.difficulty;
+		});
+	}).done(function(){
+		getNewQuestions();
 	});
+
+	var getNewQuestions = function(){
+		// Get the new measures for calculating the level on rash scale
+		$.get( "ajax/selectNewMeasures.php", function( data ){
+			newMeasures = $.parseJSON( data );
+		}).done(function(){
+			createMeasures();
+		});	
+	}
+	
 
 	// Fill the array with all the questions about the set in the database
 	$.get( "ajax/selectSetQuestions.php", function( data ){
@@ -56,6 +70,7 @@ var RashRecommenderModel = function( options ){
 						Helper Functions
 	***********************************************************/
 
+	// Array shuffle function
 	shuffle = function( array ){
 		var currentIndex = array.length, 
 		temporaryValue, randomIndex;
@@ -71,8 +86,17 @@ var RashRecommenderModel = function( options ){
 		    array[currentIndex] = array[randomIndex];
 		    array[randomIndex] = temporaryValue;
 	  	}
-
 	  	return array;
+	}
+
+	// Array split function
+	split = function( a, n ){
+		var len = a.length, out = [], i = 0;
+		while ( i < len ){
+			var size = Math.ceil( ( len - i ) / n--);
+			out.push( a.slice( i, i+= size ));
+		}
+		return out;
 	}
 
 	getClosest = function( array,value ){
@@ -107,7 +131,6 @@ var RashRecommenderModel = function( options ){
 			email = mail;
 			facebookId = fbid;
 		});
-
 		notifyObservers('userCreated');
 	}
 
@@ -139,43 +162,33 @@ var RashRecommenderModel = function( options ){
 		);
 	}
 
-	// Get a measure to present to the user, check if it's in range and if it hasnt
-	// been shown before. This one needs to be upgraded to use closest instead of
-	// the range.
+	// Take samples from the pool of measures after they've been loaded
+	createMeasures = function(){
+			selectedMeasures 	= [];
+		    numberOfSets 		= Math.ceil( measures.length / o.measurSetSize );
+
+		setArray = split( measures, numberOfSets );
+
+		for( i=0; i < numberOfSets; i++ ){
+			var rand = Math.floor( Math.random() * setArray[i].length );
+			selectedMeasures.push( setArray[i][rand] );
+		}
+
+		// Add two of the new measures to the list
+		for( i=0; i < o.newMeasureNumber; i++ ){
+			shuffle( newMeasures );
+			selectedMeasures.push( newMeasures[i] );
+		}
+		// randomize the order of the selected measures
+		shuffle( selectedMeasures );
+	}
+	
+	// Get a measure to present to the user
 	newMeasure = function(){
-
-		if( stepCounter < o.maxSteps && Math.abs( change ) > 1 ){
-
-			var tempMeasures = [];
-			var selectedMeasures = [];
-
-			for( i=0; i<measures.length; i++ ){
-				if( $.inArray(measures[i], measureHistory ) == -1){
-					tempMeasures.push(measures[i]);
-				}
-			}
-
-			// Taking only the 5 closest measures, this number might have to be lower
-			// when the ability is further away from the center, because there are
-			// less measures there. When we implement the first four questions the 
-			// whole iteration should be gone! <------------------------
-			// This seems to work pretty well though
-			for ( i=0; i<5; i++ ){
-				var closest = getClosest( tempMeasures, ability );
-				selectedMeasures.push( closest );
-				// Remove the recommendation from the temp list
-				tempMeasures = $.grep( tempMeasures, function( value ) {
-					return value != closest;
-				});
-			}
-
-			// Select a measure at random
-			var randomSelection = Math.floor( Math.random() * selectedMeasures.length );
-			currentMeasure = selectedMeasures[randomSelection];
-			measureHistory.push( selectedMeasures[randomSelection] );
+		if( stepCounter < numberOfSets + o.newMeasureNumber ){
+			currentMeasure = selectedMeasures[stepCounter];
 			stepCounter++;
 			notifyObservers( 'measureReady' );
-			
 		}
 		else{
 			// Create the recommendation when the conditions are met
@@ -185,87 +198,105 @@ var RashRecommenderModel = function( options ){
 
 	// Used when the user votes, can take either "yes", "no" or "nvt" as parameters.
 	setUserMeasure = function( value ){
-		if( value == "nvt" ){
-			change = 0;
-			lastChange = 0;
+		var answer;
+		// This checks if the measure is a existing one or one we are testing to put
+		// on the rasch scale as new. The new ones dont have difficulty yet ofcourse.
+		if(currentMeasure.difficulty == null){
+			if( value == "yes" ){
+				answer = 1;
+			}
+			if( value == "no" ){
+				answer = 0;
+			}
+			if( value == "nvt" ){
+				answer = 2;
+			}
+			$.post( "ajax/insertUserNewMeasure.php", 
+				{ 
+					userId: currentUserId,
+					measureId: currentMeasure.id,
+					answer: answer
+				}).done(function(){
+			});
 		}
 		else{
-			// Check if this is the first step
-			if( prevStep == null ){
-				change = Math.pow( 0.85, currentStep ) * ( o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) ) );
+
+			if( value == "yes" ){
+				yes ++;
+				answer = 1;
+				// only pushed to history if the answer is yes or nvt
+				measureHistory.push( currentMeasure );
 			}
-			// Check if last time the user went in the oppsite direction
-			// and if the step hasn't been repeated too often
-			else if( prevStep != value ){
-				stepRepeat ++;
-				if( stepRepeat >= o.maxStepRepeat ){
-					stepRepeat = 0;
-					currentStep ++;
-					change = Math.pow( 0.85, currentStep ) * ( o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) ) );
-				}
-				else{
-					change = lastChange;
-				}
+			else if( value == "no" ){
+				answer = 0;
 			}
-			else{
-				stepRepeat = 0;
-				currentStep ++;
-				change = Math.pow( 0.85, currentStep ) * ( o.stepConstant * ( ( o.range / 2 ) - Math.sqrt( Math.pow( ability - ( o.range / 2 ), 2 ) ) ) );
+			else if( value == "nvt"){
+				answer = 2;
+				nvt++;
+				measureHistory.push( currentMeasure );
 			}
 
-			// Save the last direction and change
-			prevStep = value;
-			lastChange = change;
+			$.post( "ajax/insertUserMeasure.php", 
+				{ 
+					userId: currentUserId,
+					measureId: currentMeasure.id,
+					answer: answer
+				}).done(function(){
 
-			// Set to minus or plus and apply change
-			change = ( value == "yes" ? change : -change );
-			ability += change;
-			
+				// When measure is saved get the next one
+			});
 		}
-
-		console.log(ability);
-
-		$.post( "ajax/insertUserMeasure.php", 
-			{ 
-				userId: currentUserId,
-				measureId: currentMeasure.id,
-				currentAbility: ability,
-				abilityChange: change
-			}).done(function(){
-
-			// When measure is saved get the next one
-			newMeasure();
-		});
+		
+		newMeasure();
 	}
 
 	// Create the recommendation from the ability depending
 	// on the condition.
 	createRecommendation = function(){
-		var recomArray = [];
+
+		// If someone has 0 'yes' answers we give him one so we have 
+		// someting to recommend
+		if( yes == 0 ) {
+			yes = 1;
+		}
+		// Check if questions were NVT and extrapolate accordingly
+		abilitySet 	 		= setArray[Math.round( yes + ( ( yes / numberOfSets ) * nvt ) ) - 1];
+
+		// calculate mean ability of set
+		var count 			= 0;
+		$.each(abilitySet,function(index){
+			count 			+= Number(this.difficulty);
+		});
+		ability 			= count / abilitySet.length;
+
+		console.log("ability: "+ability);
+
+		var recomArray 		= [];
 		for( i=0; i<measures.length; i++ ){
+			// Not adding recommendations that user is already doing
 			if( $.inArray( measures[i],measureHistory ) == -1 ){
 				if( o.recommendationAllignment == "center" || o.recommendationAllignment == "random" ){
 						recomArray.push( measures[i] );
 				}
-				else if ( o.recommendationAllignment == "below" ){
-					if( measures[i].difficulty <= ability ){
+				else if ( o.recommendationAllignment == "centerbig" ){
+					if( measures[i].difficulty >= ( ability - o.logitSize ) && measures[i].difficulty <= ( ability + o.logitSize ) ){
 						recomArray.push( measures[i] );
 					}
 				}
 				else if ( o.recommendationAllignment == "above" ){
-					if( measures[i].difficulty >= ability ){
+					if( measures[i].difficulty >= ability && measures[i].difficulty <= ability + o.logitSize ){
 						recomArray.push( measures[i] );
 					}
 				}
 			}
 		}
 		
-		if( o.recommendationAllignment == "center" || o.recommendationAllignment == "below" || o.recommendationAllignment == "above" ){
+		if( o.recommendationAllignment == "center" ){
 			
 			// Check if there are enough available recommendations and use them
 			// This might not be the case but i'm not sure what to do with this yet.
-			if( recomArray.length >= o.recommendationNumber ){
-				for( i=0; i<o.recommendationNumber; i++ ){
+			if( recomArray.length >= o.numberOfRecommendations ){
+				for( i=0; i<o.numberOfRecommendations; i++ ){
 
 					var closest = getClosest( recomArray, ability );
 					recommendation.push( closest );
@@ -288,19 +319,27 @@ var RashRecommenderModel = function( options ){
 					
 				}
 			}
-
-			
 			// Still randomize the recommendations, this shuffles the array
-			shuffle(recommendation);
+			shuffle( recommendation );
 		}
+		// All other conditions take a sample from the recomArray to distribute
+		// the recommendations better around the scale
 		else{
-			shuffle(recomArray);
-			for( i=0; i<o.recommendationNumber; i++ ){
-					recommendation.push( recomArray[i] );
+			if( recomArray.length >= o.numberOfRecommendations ){
+				var recomSetArray 	= split( recomArray, o.numberOfRecommendations )
+				for( i=0; i<o.numberOfRecommendations; i++ ){
+					shuffle( recomSetArray[i] );
+					recommendation.push( recomSetArray[i][0] );
+				}
 			}
+			else{
+				for( i=0; i<recomArray.length; i++ ){
+					recommendation.push( recomArray[i] );
+				}
+			}
+			shuffle( recommendation );
 		}
 		
-
 		// Write the recommendations to the database
 		for( i=0; i<recommendation.length; i++ ){
 			$.post( "ajax/insertRecommendation.php", 
@@ -310,7 +349,7 @@ var RashRecommenderModel = function( options ){
 				position: i+1
 			});
 		}
-
+		console.log("recommendation: ", recommendation);
 		notifyObservers( "recommendationReady" );
 	}
 
@@ -382,6 +421,7 @@ var RashRecommenderModel = function( options ){
 	this.createUser 					= createUser;
 	this.updateUser 					= updateUser;
 	this.insertFacebookFriend			= insertFacebookFriend;
+	this.createMeasures					= createMeasures;
 	this.newMeasure 					= newMeasure;
 	this.createRecommendation 			= createRecommendation;
 
