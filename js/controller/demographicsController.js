@@ -16,11 +16,11 @@ var DemographicsController = function( model, view ){
 
 			$(view.form).hide();
 			$(view.bedankt).show();
+			$(view.shareBox).show();
 			$(view.volgendeButton).hide();
 		}
 		else{
 			alert( 'U bent waarschijnlijk een vraag vergeten!' );
 		}
 	});
-
 }

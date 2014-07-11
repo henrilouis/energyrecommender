@@ -9,7 +9,7 @@ var RashRecommenderModel = function( options ){
 
 	var defaults = {
 
-		measurSetSize					: 7,				// Size for each sample measure
+		numberOfSets					: 11,				// Size for each sample measure
 		numberOfRecommendations			: 7,
 		recommendationAllignment		: "center", 		// can either be center, below, above or random
 		logitSize  						: 13.44519164,		// the size of a logit in the used scale
@@ -24,7 +24,7 @@ var RashRecommenderModel = function( options ){
 						Variable Declarations
 	***********************************************************/
 	var measures, newMeasures, setQuestions, measureQuestions, currentUserId,
-		facebookId, email, currentMeasure, chosenMeasureId, numberOfSets,
+		facebookId, email, currentMeasure, chosenMeasureId, 
 		measureHistory = [], recommendation = [], selectedMeasures = [],
 		setArray = [], abilitySet = [],
 		change = 25 ,stepRepeat = 0, currentStep = 0, stepCounter = 0,
@@ -125,7 +125,9 @@ var RashRecommenderModel = function( options ){
 				facebookId: fbid,
 				email: mail,
 				gender: gender,
-				condition: o.recommendationAllignment
+				condition: o.recommendationAllignment,
+				userAgent: navigator.userAgent,
+				referrer: document.referrer,
 			}).done( function( data ) {
 			currentUserId = data;
 			email = mail;
@@ -144,8 +146,8 @@ var RashRecommenderModel = function( options ){
 				id: currentUserId,
 				ability: ability,
 				chosenId: chosenMeasureId,
-				email: email, 
-				interested: intBool, 
+				email: email,
+				interested: intBool
 			}
 		);
 	}
@@ -164,28 +166,27 @@ var RashRecommenderModel = function( options ){
 
 	// Take samples from the pool of measures after they've been loaded
 	createMeasures = function(){
-			selectedMeasures 	= [];
-		    numberOfSets 		= Math.ceil( measures.length / o.measurSetSize );
+		selectedMeasures 	= [];
 
-		setArray = split( measures, numberOfSets );
-
-		for( i=0; i < numberOfSets; i++ ){
+		setArray = split( measures, o.numberOfSets );
+		for( i=0; i < o.numberOfSets; i++ ){
 			var rand = Math.floor( Math.random() * setArray[i].length );
 			selectedMeasures.push( setArray[i][rand] );
 		}
 
 		// Add two of the new measures to the list
+		shuffle( newMeasures );
 		for( i=0; i < o.newMeasureNumber; i++ ){
-			shuffle( newMeasures );
 			selectedMeasures.push( newMeasures[i] );
 		}
 		// randomize the order of the selected measures
 		shuffle( selectedMeasures );
+		
 	}
 	
 	// Get a measure to present to the user
 	newMeasure = function(){
-		if( stepCounter < numberOfSets + o.newMeasureNumber ){
+		if( stepCounter < o.numberOfSets + o.newMeasureNumber ){
 			currentMeasure = selectedMeasures[stepCounter];
 			stepCounter++;
 			notifyObservers( 'measureReady' );
@@ -260,7 +261,7 @@ var RashRecommenderModel = function( options ){
 			yes = 1;
 		}
 		// Check if questions were NVT and extrapolate accordingly
-		abilitySet 	 		= setArray[Math.round( yes + ( ( yes / numberOfSets ) * nvt ) ) - 1];
+		abilitySet 	 		= setArray[Math.round( yes + ( ( yes / o.numberOfSets ) * nvt ) ) - 1];
 
 		// calculate mean ability of set
 		var count 			= 0;
@@ -269,7 +270,7 @@ var RashRecommenderModel = function( options ){
 		});
 		ability 			= count / abilitySet.length;
 
-		console.log("ability: "+ability);
+		console.log("a: "+ability);
 
 		var recomArray 		= [];
 		for( i=0; i<measures.length; i++ ){
@@ -349,7 +350,7 @@ var RashRecommenderModel = function( options ){
 				position: i+1
 			});
 		}
-		console.log("recommendation: ", recommendation);
+		console.log("r: ", recommendation);
 		notifyObservers( "recommendationReady" );
 	}
 

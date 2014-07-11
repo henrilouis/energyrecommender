@@ -16,6 +16,12 @@ a {
 h1{
 	font-family: 'Lato', sans-serif;
 	text-transform: uppercase;
+	font-size: 41px;
+}
+
+#tuelogo{
+	float:right; 
+	margin-top: -63px;
 }
 
 h1 small{
@@ -42,12 +48,21 @@ h1 small{
 	margin-top: -20px;
 }
 
+#setQuestions .radio-inline+.radio-inline, #setQuestions .checkbox-inline+.checkbox-inline{
+	margin-left: 20px;
+}
+
+#setQuestions .radioContainer{
+
+}
+
 #legend{
 	margin-left: 50%;
 	font-size: 12px;
 	margin-bottom: 15px;
 	margin-top: 15px;
 	text-align: center;
+	padding-right: 38px;
 }
 
 .radioContainer{
@@ -57,7 +72,7 @@ h1 small{
 }
 
 #legend span{
-	padding-right: 27px;
+	
 }
 
 #mainApplication{
@@ -78,6 +93,7 @@ h1 small{
 	background: #5bc0de;
 	color: #fff;
 	padding-bottom:15px;
+	padding-top: 1px;
 }
 
 #boxHeader h2{
@@ -90,9 +106,38 @@ h1 small{
 }
 
 
+a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.active:focus{
+	background-color: #5bc0de;
+	border-color: #5bc0de;
+	background-image: none;
+	text-shadow: 0 -1px 0 #5bc0de;
+}
 
 
 
+@media all and (max-width: 480px){
+  #setQuestions .radio-inline+.radio-inline, #setQuestions .checkbox-inline+.checkbox-inline{
+  		margin-left:0px;
+  }
+}
+@media all and (max-width: 620px){
+	#legend span:nth-child(2){
+		display:none;
+	}
+	#legend span{
+		font-size:10px;
+	}
+	#legend {
+		padding-right: 10px;
+	}
+	
+}
+
+@media all and (min-width:480px) and (max-width: 620px){
+	#setQuestions .radio-inline+.radio-inline, #setQuestions .checkbox-inline+.checkbox-inline{
+		margin-left: 10px;
+	}
+}
 
 
 

@@ -43,7 +43,7 @@ var MeasureAbilityView = function(model, container){
 	model.addObserver( this );
 	this.update = function( args ){
 		if( args == "userCreated" ){
-			container.show();
+			container.delay(3000).slideDown();
 		}
 		if( args == "measureReady" ){
 			updateMeasure();

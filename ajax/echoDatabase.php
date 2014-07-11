@@ -32,10 +32,12 @@
 	}
 
 	echoTable( "measures",$database );
+	echoTable( "newMeasures",$database );
 	echoTable( "measureQuestions",$database );
 	echoTable( "setQuestions",$database );
 	echoTable( "users",$database );
 	echoTable( "userMeasure",$database );
+	echoTable( "userNewMeasure",$database );
 	echoTable( "userMeasureQuestions",$database );
 	echoTable( "userMeasureRecommendations",$database );
 	echoTable( "userSetQuestions",$database );

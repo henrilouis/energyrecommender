@@ -13,6 +13,8 @@
 			"email"			=> $_POST['email'],
 			"gender"		=> $_POST['gender'],
 			"condition" 	=> $_POST['condition'],
+			"userAgent"		=> $_POST['userAgent'],
+			"referrer"		=> $_POST['referrer']
 			
 	));
 	

@@ -56,7 +56,4 @@ $(function(){
 	var demographicsView				= new DemographicsView( rashRecommenderModel, $( "#demographics" ) );
 	var demographicsController 			= new DemographicsController( rashRecommenderModel, demographicsView );
 
-	// initialize star rating stuff with defaults
-	$("#input-id").rating();
-
 })

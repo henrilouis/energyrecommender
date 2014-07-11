@@ -12,7 +12,10 @@ var MeasureQuestionsController = function( model, view ){
 					var questionId 	= $(this).attr('id');
 					var val			= $(this).find('input:checked').val();
 					if(!val){
-						val 		= $(this).find('input').val()*2;
+						val 		= $(this).find('input[name="score"]').val()*2;
+						if(!val){
+							val = 0;
+						}
 					}
 
 					// Save the answers to the database

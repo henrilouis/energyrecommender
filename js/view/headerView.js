@@ -25,11 +25,11 @@ var HeaderView = function ( model, container ){
 
 		if( args == "userCreated" ){
 			h2.html("Vragen");
-			p.html("Als onderdeel van ons aanbevelingssysteem stellen we u eerst een aantal vragen over uw huidige positie in energiebesparing.");
+			p.html("Als onderdeel van ons aanbevelingssysteem stellen we u eerst een aantal vragen over uw huidige positie in energiebesparing. Als de maatregel voor u niet mogelijk is druk dan op N.V.T.");
 		}
 
 		if( args == "recommendationReady" ){
-			h2.html( "Uw aanbevelingen" );
+			h2.html( "Uw aanbevelingen & Keuze" );
 			p.html( "Wij bevelen u de volgende maatregelen aan om energiezuiniger te leven. Klik de maatregel aan die u het waarschijnlijkst zou uitvoeren." );
 		}
 
@@ -44,8 +44,8 @@ var HeaderView = function ( model, container ){
 		}
 
 		if( args == "measureQuestionsDone" ){
-			h2.html( "Bedankt voor uw deelname!" );
-			p.html( "Om mee te doen aan de loting voor de 5 bol.com waardebonnen t.w.v. €20,- hebben we uw e-mail adres nodig." );
+			h2.html( "Loting & vervolgonderzoek" );
+			p.html( "Om mee te doen aan de loting voor de 5 bol.com waardebonnen t.w.v. €20,- hebben we uw e-mail adres nodig. We hebben (indien mogelijk) al uw facebook emailadres ingevuld. U kunt dit hieronder nog wijzigen als u dat wenst." );
 		}
 		
 	}

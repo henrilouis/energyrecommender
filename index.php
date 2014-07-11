@@ -11,7 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/star-rating.min.css">
+        <link rel="stylesheet" href="css/jquery.raty.css">
         <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
         <style>
             body {
@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="css/main.css">
 
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -32,7 +33,8 @@
         <div class="container">
             <header class="row">
                 <div class="col-md-8 col-md-offset-2">
-                    <h1>Energie-advies</h1>
+                    <h1>Besparingshulp</h1>
+                    <img id='tuelogo' src="img/tue.png" alt="TU/e" title="Technische Universiteit Eindhoven">
                 </div>
             </header>
         </div>
@@ -76,7 +78,7 @@
 
         <script src="js/vendor/bootstrap.min.js"></script>
         <script src="js/vendor/facebook.js"></script>
-        <script src="js/vendor/star-rating.min.js"></script>
+        <script src="js/vendor/jquery.raty.js"></script>
 
         <script src="js/main.js"></script>
         <script src="js/rashRecommenderModel.js"></script>

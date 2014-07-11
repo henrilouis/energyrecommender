@@ -6,9 +6,10 @@ var SetQuestionsView = function( model, container ){
 
 	var measureQuestionList		= $( "<div class='list-group'>" );
 	var volgendeButton	 		= $( "<a class='btn btn-default pull-right' role='button'>Volgende &raquo;</a>" );
+	var clearfix				= $( '<div class="clearfix">' );
 	var questions;
 
-	container.append( measureQuestionList, volgendeButton );
+	container.append( measureQuestionList, volgendeButton, clearfix );
 
 	/***********************************************************
 						Private Variables
@@ -19,8 +20,8 @@ var SetQuestionsView = function( model, container ){
 		var questions 			= model.getSetQuestions();
 		measureQuestionList.empty();
 
-		var legend 					= $( "<div id='legend'><span>Helemaal oneens</span><span>Neutraal</span><span>Helemaal eens</span>" );
-		var clearfix				= $( '<div class="clearfix">' );
+		var legend 					= $( "<div id='legend'><span style='float:left'>Helemaal oneens</span><span>Neutraal</span><span  style='float:right'>Helemaal eens</span>" );
+		
 		$.each( questions, function(key, value) {
 			var item 			= $( "<div class='list-group-item'>" );
 				item 			.attr( 'id', value.id );
@@ -41,6 +42,7 @@ var SetQuestionsView = function( model, container ){
 			item.append( radioContainer );
 			if( key % 6 === 0 ){
 				legend.clone().appendTo( measureQuestionList );
+				clearfix.clone().appendTo( measureQuestionList );
 			}
 			clearfix.clone().appendTo( item );
 			measureQuestionList.append( item );

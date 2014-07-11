@@ -140,6 +140,8 @@ function testAPI() {
   FB.api('/me', function(response) {
     document.getElementById('status').innerHTML =
       'Ingelogd als ' + response.name + '!';
+      $("#emailInput").val(response.email);
   });
+
 }
 }

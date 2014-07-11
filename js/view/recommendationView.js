@@ -5,8 +5,10 @@ var RecommendationView = function( model,container ){
 	***********************************************************/
 
 	var recommendationList		= $( "<div id='recommendationList' class='list-group'>" );
-
-	container.append( recommendationList );
+	var volgendeButton	 		= $( "<a class='btn btn-default pull-right' role='button'>Volgende &raquo;</a>" );
+	var progressContainer		= $( "<div class='progress progress-striped active'>" );
+	var progressBar				= $( "<div class='progress-bar' role='progressbar' aria-valuenow='45' aria-valuemin='0' aria-valuemax='100' style='width:0%'>");
+		progressContainer.append( progressBar );
 	
 	/***********************************************************
 						Private Variables
@@ -29,7 +31,10 @@ var RecommendationView = function( model,container ){
 			recommendationList.append( a );
 
 			a.click(function(){
-				model.setChosen($(this).attr('id'));
+				$('#recommendationList .list-group-item').each(function(){
+					$(this).removeClass('active');
+				});
+				$(this).addClass('active');
 			});
 
 		}
@@ -39,7 +44,8 @@ var RecommendationView = function( model,container ){
 						Public Variables
 	***********************************************************/
 
-	this.recommendationList = recommendationList;
+	this.recommendationList 	= recommendationList;
+	this.volgendeButton 		= volgendeButton;
 
 	/***********************************************************
 							 Update
@@ -50,9 +56,29 @@ var RecommendationView = function( model,container ){
 		if( args == "recommendationReady" ){
 			container.show();
 			updateRecommendationList();
+			container.append( progressContainer );
+			setTimeout(function() {
+			    progressBar.css('width','25%');
+			}, 1000);
+			setTimeout(function() {
+			    progressBar.css('width','50%');
+			}, 2500);
+			setTimeout(function() {
+			    progressBar.css('width','75%');
+			}, 3000);
+			setTimeout(function() {
+			    progressBar.css('width','100%');
+			}, 3500);
+			setTimeout(function() {
+			    progressContainer.hide();
+			    container.slideUp();
+			    container.append( recommendationList, volgendeButton );
+			    container.slideDown();
+			}, 4000);
 		}
 		if( args == "measureChosen" ){
 			container.hide();
+			model.updateUser();
 		}
 	}
 

@@ -6,15 +6,16 @@ var MeasureQuestionsView = function( model, container ){
 
 	var measureQuestionList		= $( "<div class='list-group'>" );
 	var volgendeButton	 		= $( "<a class='btn btn-default pull-right' role='button'>Volgende &raquo;</a>" );
+	var clearfix				= $( '<div class="clearfix">' );
 
-	container.append( measureQuestionList, volgendeButton );
+	container.append( measureQuestionList, volgendeButton, clearfix );
 
 	/***********************************************************
 						Private Variables
 	***********************************************************/
 
 	updateMeasureQuestionList = function(){
-
+		
 		measureQuestionList.empty();
 		var recommendation 				= model.getRecommendation();
 		var measureQuestions			= model.getMeasureQuestions();
@@ -43,7 +44,7 @@ var MeasureQuestionsView = function( model, container ){
 						p.html( measureQuestions[j].question );
 						question.append( p );
 					var radioContainer		= $( "<div class='radioContainer'>" );
-					var stars 		= $( "<input type='number' class='rating' min=0 max=5 step=0.5 data-size='md'>" );
+					var stars 				= $( "<div class='rating'>" );
 						stars.attr('id',measureQuestions[j].id);
 						radioContainer.append(stars);
 				}
@@ -87,7 +88,11 @@ var MeasureQuestionsView = function( model, container ){
 			measureQuestionList.append( item );
 			
 		}
-		$(".rating").rating({showClear:false,showCaption:false});
+		$(".rating").raty({ 
+			path: 'img', 
+			half: true,
+			hints: ['zeer slecht', 'slecht', 'gemiddeld', 'goed', 'zeer goed']
+		});
 	}
 
 	/***********************************************************
