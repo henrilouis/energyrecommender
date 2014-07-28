@@ -5,7 +5,7 @@ var InformedConsentView = function(model, container, facebookApi){
 	var loginButton 		= $( '<fb:login-button id="fbloginbtn" scope="public_profile,email" onlogin="location.reload();">' );
 	var fbStatus 			= $( '<div id="status">' );
 	var startButton	 		= $( "<a class='btn btn-default btn-lg pull-right' role='button'>Start</a>" );
-	var clearfix				= $( '<div class="clearfix">' );
+	var clearfix			= $( '<div class="clearfix">' );
 	var logoutButton 		= $( "<a id='fblogout'>Log uit</a>");
 		logoutButton.hide();
 

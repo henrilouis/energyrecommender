@@ -14,7 +14,7 @@ var RashRecommenderModel = function( options ){
 		recommendationAllignment		: "center", 		// can either be center, below, above or random
 		logitSize  						: 13.44519164,		// the size of a logit in the used scale
 		newMeasureNumber				: 2,
-
+		
 	};
 
 	var options = $.extend(defaults,options);
